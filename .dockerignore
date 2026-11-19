@@ -1,0 +1,9 @@
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.png
+classification_report.json
+spam.csv
+.ipynb_checkpoints/
+.DS_Store
