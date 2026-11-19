@@ -1,12 +1,16 @@
 # End-to-end SMS spam training pipeline (Steps 1-8)
 # Run: python train_pipeline.py
+import json
 import os
 import joblib
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
@@ -16,6 +20,8 @@ from preprocess import clean_text
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(BASE, "spam.csv")
 MODEL = os.path.join(BASE, "spam_pipeline.joblib")
+REPORT = os.path.join(BASE, "classification_report.json")
+CM_DIR = os.path.join(BASE, "confusion_matrices")
 
 
 def main():
@@ -40,6 +46,8 @@ def main():
     }
 
     results = {}
+    all_reports = {}
+    os.makedirs(CM_DIR, exist_ok=True)
     for name, clf in models.items():
         pipe = Pipeline([
             ("tfidf", TfidfVectorizer(
@@ -55,8 +63,23 @@ def main():
         report = classification_report(y_test, pred, target_names=["ham", "spam"], output_dict=True)
         spam_f1 = report["spam"]["f1-score"]
         results[name] = (pipe, spam_f1)
+        all_reports[name] = report
         print(f"\n== {name}")
         print(classification_report(y_test, pred, target_names=["ham", "spam"]))
+
+        cm = confusion_matrix(y_test, pred)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["ham", "spam"])
+        disp.plot(cmap="Blues", values_format="d")
+        plt.title(f"Confusion Matrix - {name}")
+        plt.tight_layout()
+        cm_path = os.path.join(CM_DIR, f"confusion_matrix_{name}.png")
+        plt.savefig(cm_path, dpi=150)
+        plt.close()
+        print("Saved:", cm_path)
+
+    with open(REPORT, "w") as f:
+        json.dump(all_reports, f, indent=2)
+    print("Saved:", REPORT)
 
     # Choose best model by spam F1 that supports predict_proba (needed by app/backend)
     proba_models = {n: (p, f1) for n, (p, f1) in results.items()
