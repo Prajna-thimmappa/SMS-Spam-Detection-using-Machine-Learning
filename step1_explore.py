@@ -9,7 +9,7 @@ import seaborn as sns
 
 # 1) Load data. The UCI/Kaggle file is usually named "spam.csv"
 #    It has columns: v1 (label: ham/spam), v2 (message), plus 3 empty columns.
-df = pd.read_csv("spam.csv", encoding="latin-1")
+df = pd.read_csv("spam.csv", encoding="utf-8")
 
 # Keep only the useful columns and rename them
 df = df[["v1", "v2"]]
