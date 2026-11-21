@@ -1,13 +1,19 @@
 # Step 5: Train Naive Bayes, Logistic Regression, and Linear SVM
+import joblib
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
-# Assume X_train, y_train ready
-# nb = MultinomialNB(); nb.fit(X_train, y_train)
-# lr = LogisticRegression(max_iter=1000); lr.fit(X_train, y_train)
-# svm = LinearSVC(); svm.fit(X_train, y_train)
+if __name__ == "__main__":
+    X_train, X_test, y_train, y_test = joblib.load("split.joblib")
 
-# MultinomialNB needs non-negative counts/TF-IDF -> ok with TF-IDF.
-# LinearSVC has no predict_proba; use decision_function if needed.
-print("Models: MultinomialNB, LogisticRegression, LinearSVC")
+    models = {
+        "nb": MultinomialNB(),
+        "lr": LogisticRegression(max_iter=1000),
+        "svm": LinearSVC(max_iter=1000),
+    }
+
+    for name, model in models.items():
+        model.fit(X_train, y_train)
+        joblib.dump(model, f"model_{name}.joblib")
+        print(f"Trained and saved {name} -> model_{name}.joblib")

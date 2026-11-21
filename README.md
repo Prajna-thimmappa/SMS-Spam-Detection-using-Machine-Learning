@@ -39,11 +39,11 @@ Spam messages waste time and can be harmful (phishing, scams). This project buil
 
 | Model                | Accuracy | Precision | Recall | F1-score |
 |----------------------|----------|-----------|--------|----------|
-| Multinomial NB       | [xx%]    | [xx%]     | [xx%]  | [xx%]    |
-| Logistic Regression  | [xx%]    | [xx%]     | [xx%]  | [xx%]    |
-| Linear SVM           | [xx%]    | [xx%]     | [xx%]  | [xx%]    |
+| Multinomial NB       | 97%      | 100%      | 81%    | 90%      |
+| Logistic Regression  | 97%      | 100%      | 77%    | 87%      |
+| Linear SVM           | 98%      | 97%       | 89%    | 93%      |
 
-**Best model:** [model name], chosen because [reason, e.g. highest F1 on spam class].
+**Best model:** Linear SVM, chosen because it has the highest F1-score on the spam class (93%) and the highest spam recall (89%).
 
 Accuracy alone is misleading on imbalanced data, so precision, recall, and F1 for the spam class were the main metrics.
 

@@ -3,6 +3,8 @@
 
 import re
 import string
+import joblib
+import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -24,11 +26,11 @@ def clean_text(text):
     tokens = [lemmatizer.lemmatize(w) for w in tokens if w not in stop_words]
     return " ".join(tokens)
 
-# Apply to the dataframe from Step 1
-# df["clean"] = df["message"].apply(clean_text)
-# print(df[["message", "clean"]].head())
-
-# Demo on a single message
-sample = "WINNER!! You have won a FREE prize. Call 0906... now!!!"
-print("Original:", sample)
-print("Cleaned :", clean_text(sample))
+if __name__ == "__main__":
+    df = pd.read_csv("spam.csv", encoding="latin-1")
+    df = df[["v1", "v2"]]
+    df.columns = ["label", "message"]
+    df["clean"] = df["message"].apply(clean_text)
+    joblib.dump(df, "df_clean.joblib")
+    print(df[["message", "clean"]].head())
+    print("Saved cleaned dataframe to df_clean.joblib")
