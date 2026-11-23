@@ -12,6 +12,10 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE, "spam_pipeline.joblib")
 
 st.title("SMS Spam Classifier")
+MODEL_PATH = os.path.join(BASE, "spam_pipeline.joblib")
+if not os.path.exists(MODEL_PATH):
+    st.error("Model file not found. Run `python train_pipeline.py` first to train and save `spam_pipeline.joblib`.")
+    st.stop()
 pipe = joblib.load(MODEL_PATH)
 
 msg = st.text_area("Enter an SMS message")
