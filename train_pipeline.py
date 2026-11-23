@@ -25,7 +25,7 @@ CM_DIR = os.path.join(BASE, "confusion_matrices")
 
 
 def main():
-    df = pd.read_csv(DATA, encoding="utf-8")
+    df = pd.read_csv(DATA, encoding="latin-1")
     df = df[["v1", "v2"]]
     df.columns = ["label", "message"]
     df = df.dropna(subset=["message"])
